@@ -11,9 +11,6 @@ Sources:
     - mktests.sh.in
     - runDbusTest.sh.in
     - runTest.sh.in
-Patches:
-    - nemo-tests-install.patch
-    - telepathy-qt5.patch
 Description: |
     Qt-based library for Telepathy components.
 PkgConfigBR:

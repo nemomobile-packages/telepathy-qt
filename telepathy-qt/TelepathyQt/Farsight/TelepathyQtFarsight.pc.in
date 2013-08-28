@@ -1,0 +1,11 @@
+prefix=${CMAKE_INSTALL_PREFIX}
+exec_prefix=${CMAKE_INSTALL_PREFIX}
+libdir=${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}
+includedir=${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_DIR}
+
+Name: TelepathyQt${Qt5Core_VERSION_MAJOR}Farsight
+Description: Qt Telepathy Farsight utility library for the Telepathy framework
+Version: ${PACKAGE_VERSION}
+Requires.private: Qt5Core >= ${QT_MIN_VERSION}, Qt5Core < ${QT_MAX_VERSION}, Qt5DBus >= ${QT_MIN_VERSION}, Qt5DBus < ${QT_MAX_VERSION}, telepathy-glib >= ${TELEPATHY_GLIB_MIN_VERSION}, telepathy-farsight >= ${TELEPATHY_FARSIGHT_MIN_VERSION}, TelepathyQt${Qt5Core_VERSION_MAJOR} = ${PACKAGE_VERSION}
+Libs: -L${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR} -ltelepathy-qt${Qt5Core_VERSION_MAJOR}-farsight
+Cflags: -I${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_DIR}/telepathy-qt${Qt5Core_VERSION_MAJOR}

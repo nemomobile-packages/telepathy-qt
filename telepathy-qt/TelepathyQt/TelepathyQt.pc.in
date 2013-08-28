@@ -1,0 +1,11 @@
+prefix=${CMAKE_INSTALL_PREFIX}
+exec_prefix=${CMAKE_INSTALL_PREFIX}
+libdir=${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}
+includedir=${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_DIR}
+
+Name: TelepathyQt${Qt5Core_VERSION_MAJOR}
+Description: Qt utility library for the Telepathy framework
+Version: ${PACKAGE_VERSION}
+Requires.private: Qt5Core >= ${QT_MIN_VERSION}, Qt5Core < ${QT_MAX_VERSION}, Qt5DBus >= ${QT_MIN_VERSION}, Qt5DBus < ${QT_MAX_VERSION}, Qt5Network >= ${QT_MIN_VERSION}, Qt5Network < ${QT_MAX_VERSION}, Qt5Xml >= ${QT_MIN_VERSION}, Qt5Xml < ${QT_MAX_VERSION}
+Libs: -L${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR} -ltelepathy-qt${Qt5Core_VERSION_MAJOR}
+Cflags: -I${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_DIR}/telepathy-qt${Qt5Core_VERSION_MAJOR}

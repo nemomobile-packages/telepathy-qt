@@ -1,0 +1,11 @@
+prefix=/nonexistent
+exec_prefix=/nonexistent
+abs_top_builddir=${CMAKE_BINARY_DIR}
+abs_top_srcdir=${CMAKE_SOURCE_DIR}
+
+Name: TelepathyQt${Qt5Core_VERSION_MAJOR}Service (uninstalled copy)
+Description: Qt Telepathy Service side bindings
+Version: ${PACKAGE_VERSION}
+Requires.private: Qt5Core >= ${QT_MIN_VERSION}, Qt5Core < ${QT_MAX_VERSION}, Qt5DBus >= ${QT_MIN_VERSION}, Qt5DBus < ${QT_MAX_VERSION}, TelepathyQt${Qt5Core_VERSION_MAJOR} = ${PACKAGE_VERSION}
+Libs: ${CMAKE_BINARY_DIR}/TelepathyQt/Farsight/libtelepathy-qt${Qt5Core_VERSION_MAJOR}-service.so
+Cflags: -I${CMAKE_SOURCE_DIR} -I${CMAKE_BINARY_DIR}

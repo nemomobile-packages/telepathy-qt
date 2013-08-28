@@ -1,0 +1,11 @@
+prefix=/nonexistent
+exec_prefix=/nonexistent
+abs_top_builddir=${CMAKE_BINARY_DIR}
+abs_top_srcdir=${CMAKE_SOURCE_DIR}
+
+Name: TelepathyQt${Qt5Core_VERSION_MAJOR}Farstream (uninstalled copy)
+Description: Qt Telepathy Farstream utility library for the Telepathy framework
+Version: ${PACKAGE_VERSION}
+Requires.private: Qt5Core >= ${QT_MIN_VERSION}, Qt5Core < ${QT_MAX_VERSION}, Qt5DBus >= ${QT_MIN_VERSION}, Qt5DBus < ${QT_MAX_VERSION}, telepathy-glib >= ${TELEPATHY_GLIB_MIN_VERSION}, telepathy-farstream >= ${TELEPATHY_FARSTREAM_MIN_VERSION}, TelepathyQt${Qt5Core_VERSION_MAJOR} = ${PACKAGE_VERSION}
+Libs: ${CMAKE_BINARY_DIR}/TelepathyQt${Qt5Core_VERSION_MAJOR}/Farstream/libtelepathy-qt${Qt5Core_VERSION_MAJOR}-farstream.so
+Cflags: -I${CMAKE_SOURCE_DIR} -I${CMAKE_BINARY_DIR}

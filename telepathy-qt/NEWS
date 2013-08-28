@@ -1,0 +1,1578 @@
+telepathy-qt 0.9.3 (2012-07-13)
+=================================
+
+The "We promised, we delivered" release.
+
+Enhancements:
+ * Added ClientTypes bindings to Contact.
+ * Fixed deprecation macros, and added TP_QT_EXPORT_DEPRECATED.
+ * Ported SimpleCallObserver to also handle Call1 calls.
+ * Deprecated Farsight and StreamedMedia.
+
+Fixes:
+ * Removed occurencies of deprecated tp-glib functions from the DBus tube tests.
+ * Fixed DISABLE_WERROR, which now works as expected.
+ * Fixed linking of the DBus tube tests with strict linkers like gold.
+ * Synced tests/lib/glib/utils.* to remove deprecation warnings.
+ * Removed occurencies of the deprecated tp_connection_new from Farsight/Farstream.
+
+telepathy-qt 0.9.2 (2012-07-04)
+=================================
+
+The "We were at aKademy and we got bored" release.
+
+Enhancements:
+ * Introducing Telepathy-Qt-Service, a new static library that contains
+   experimental service-side bindings. For the moment this exposes
+   the required low-level interfaces for writing connection managers,
+   as well as some basic high-level API.
+ * Renamed AccountManager::accountForPath() and AccountManager::accountsForPaths()
+   to accountForObjectPath() and accountsForObjectPaths() respectively,
+   deprecating the old names.
+ * Added bindings for Debug interface.
+ * Enable several options in CMake to allow to selectively build components. In particular,
+   now Farsight, Farstream, examples and tests are optional. Farsight is disabled by default.
+ * fd.o #28366: Added high level bindings for DBus tubes.
+
+Fixes:
+ * Fix PkgConfig detection in DBus find files
+ * Fix a race condition in test-account-basics and test-dbus-properties.
+ * Fix compilation with gcc 4.7.
+ * Fix tests compilation with telepathy-glib 0.19.
+ * Fix FindDBus.cmake to find the correct paths.
+ * Pass -fvisibility-inlines-hidden to the compiler if it's supported.
+
+telepathy-qt 0.9.1 (2012-03-23)
+=================================
+
+The "it is call time" release.
+
+Enhancements:
+ * fd.o #43025: Tp::Presence now has a setStatusMessage() method which keeps the
+   old status id and status type
+ * Added methods in Tp::AbstractInterface to support PropertiesChanged. This way it is
+   possible for internal classes to monitor any property belonging to their interface
+ * fd.o #46403: Update spec files to spec 0.25.2 and generate low-level bindings
+   for all non-draft interfaces
+ * fd.o #46347: Added high-level bindings for new CaptchaAuthentication interface
+ * fd.o #46484: Add high-level Call bindings
+ * Introducing new Telepathy-Qt-Farstream, a new mini-library with glue code to
+   connect telepathy-farstream to Telepathy-Qt
+
+Fixes:
+ * fd.o #45850: Telepathy Qt4 cannot compile against glib 2.31.0 and above
+ * fd.o #39346: telepathy-qt fails to build with clang
+ * fd.o #45755: Inconsistent ordering of pendingMessageRemoved
+
+telepathy-qt 0.9.0 (2011-12-20)
+================================
+
+The "Merry Christmas" release.
+
+This release begins the new 0.9 development series for feature additions
+following the 0.8 stable release series.
+Starting with this release the project is renamed to telepathy-qt (TelepathyQt) and
+Qt5 support is added alongside Qt4 support and for that 0.9 will be
+API (see changes below) and ABI incompatible with previous versions.
+
+API changes:
+ * Everything containing qt4 (with or without caps) was renamed to qt.
+   Eg.:
+     - TP_QT4_DEPRECATED -> TP_QT_DEPRECATED
+     - #include <TelepathyQt4/Foo> -> #include <TelepathyQt/Foo>
+ * Errors and constant macros starting with TELEPATHY_ (const char *
+   versions) were removed, remaining only the versions that expand to
+   QLatin1String.
+   Eg.:
+     - TELEPATHY_ERROR_INVALID_HANDLE <- removed
+     - TP_QT4_ERROR_INVALID_HANDLE -> TP_QT_ERROR_INVALID_HANDLE
+ * All deprecated methods (marked with TP_QT4_DEPRECATED) and signals
+   (those that used to emit warnings at runtime when connecting to them)
+   were removed.
+ * StreamTubeChannel::connections() now returns a QSet<uint> instead of an
+   UIntList.
+ * Channel::groupContacts and groupLocal/RemotePendingContacts() gained
+   a "includeSelfContact" param defaulting to true.
+ * KeyFile and ManagerFile classes are now removed from public API.
+ * SharedPtr cannot be constructed from a QWeakPointer anymore as the
+   conversion from a QWeakPointer to a SharedPtr can't be made thread-safe.
+   WeakPtr is reintroduced as a weak pointer class safely promoteable to a
+   SharedPtr.
+ * TelepathyQt-Farsight does not include telepathy-farsight/channel.h
+   directly anymore.
+ * ContactManager::lookupContactByHandle() is removed from public API.
+
+Enhancements:
+ * fd.o #35084: The StreamTubeClient and StreamTubeServer classes have been
+   added to allow implementing Telepathy Stream Tube connectivity for
+   applications without having to worry about the channel dispatching details
+ * Contact::refreshInfo() requests are now batched together on D-Bus
+ * fd.o #41356: Implement methods to retrieve available message types on
+   TextChannel.
+ * fd.o #43631: Add CMake config files. Now CMake projects can find Tp-Qt
+   straight away without the need of Find* files.
+ * fd.o #43598 - Add high-level API for Proto.I.Addressing interface
+ * fd.o #43599 - Add high-level API for Conn.I.Addressing interface
+
+Fixes:
+ * Our TODO process being completely out of date. Trying to use doxygen \todo
+   annotations from now on
+ * FeatureRoster is set on Tp::Connection even for roster-less accounts.
+
+Known issues:
+ * Some tests are failing for some Qt 4.7 configurations, reports on fd.o bug
+   #43551 please.
+
+telepathy-qt4 0.7.3 (2011-10-07)
+================================
+
+The "a must" release.
+
+Enhancements:
+ * Added HandleTypeRoom StreamTubes to ChannelClassSpec
+ * It is now possible to capture and redirect the library debug output via
+   setting a DebugCallback using the Tp::setDebugCallback function
+ * The ChannelClassSpec implementation has been optimized, which yields
+   ChannelFactory setup and consequently application startup speedups
+ * StreamTubeChannel now ensures connectionClosed() is emitted for all
+   connections on a closing tube
+ * Add Presence/PresenceSpec operator== support
+ * Add Presence/PresenceSpec operator!= support (Rohan Garg)
+ * Add Authentication.TLSCertificate to the set of generated interfaces
+ * Improve file transfer examples to properly use the ChannelDispatcher
+
+Fixes:
+ * Ensure that the proper Channel Dispatcher methods are being called when
+   creating/ensuring channels.
+ * Prevent PendingContacts crashes in corner cases where contacts are still
+   being built when a Connection is destroyed. Note that this affects which
+   object is returned by PendingContacts::object() - we've now made it explicit
+   that object() shouldn't be used externally as we make no guarantees on what
+   object it returns, by deprecating it. It will be made protected: in the next
+   API break
+ * Passing a non-empty service param to
+   ChannelClassSpec::{incoming,outgoing}StreamTube() messing up the shared
+   instance as used by e.g. ChannelFactory
+ * Connections not being removed from StreamTubeChannel::connections() when they
+   are closed, and newConnection() and connectionClosed() events getting
+   reordered
+ * fd.o# 40655 - ChannelDispatchOperation::claim() cannot be used by Approvers
+   to handle channels
+ * Codegen is now able to utilize types with D-Bus signature aay, aas and aav
+ * Account/Connection/Channel now properly check if FeatureCore is ready on
+   accessors
+ * Readded erroneously removed protected API to StreamTubeChannel, which
+   restores full ABI backwards compatibility.
+
+telepathy-qt4 0.7.2 (2011-08-04)
+================================
+
+The "Stage 0 Tune Up" release.
+
+Enhancements:
+ * Lots of additions and corrections to API documentation
+ * Code generator now produces nicer output for member-ref, dbus-ref and
+   rationale elements in docstrings
+ * The stable D-Bus interfaces Account.Interface.Storage, Channel.Type.DBusTube
+   and Channel.Interface.Destroyable have been added to generated bindings
+
+Fixes:
+ * Tp::IncomingStreamTubeChannel always reports an empty socket address to
+   connect to for accepted Tubes - and various other StreamTube fixes thanks to
+   now having unit tests for them
+
+telepathy-qt4 0.7.1 (2011-06-09)
+================================
+
+The "where is the file?" release.
+
+Enhancements:
+ * fd.o #37034: The URI property can now be set when requesting file transfers,
+   and can be read by the Handler (and any Observers) from
+   Tp::FileTransferChannel (Daniele E. Domenichelli)
+ * Improved tests readability by moving common code into helper classes,
+   macros, etc, in preparation for increasing the test coverage
+
+Fixes:
+ * Fixed documentation for Contact::publishStateChanged()
+   (Daniele E. Domenichelli)
+ * Properly crosslink our doxygen docs to Qt documentation on fresh builds
+ * Properly generate docs for auto generated classes
+
+telepathy-qt4 0.7.0 (2011-06-01)
+================================
+
+The "Doctor Love knew this so he made another great invention just for the
+lonely you!" release.
+
+This release begins the new 0.7 development series series for feature additions
+following the 0.6 stable release series. Both 0.6 and 0.7 will continue to be
+backwards compatible API and ABI wise with the earlier 0.5 development series.
+
+Enhancements:
+ * fd.o #35341: Use the new ContactBlocking D-Bus interface for better
+   performance in Tp::ContactManager (George Kiagiadakis)
+ * ReceivedMessage: Add accessors for retrieving delivery report information,
+   sender nickname and superseded message token
+ * Crosslink our doxygen docs to Qt documentation
+
+Fixes:
+ * Do not close channels created using the request and handle API if MC
+   restarts
+ * Pass new value correctly as variant in generated binding setProperty* methods
+ * Properly initialize Connection account balance members
+ * fd.o #36881 - Wrong documentation for Tp::Account::connectionStatusChanged
+   (and a bunch of other parts of the API)
+ * fd.o #31769 - The documentation of TextChannel's features is not very helpful
+ * Skip docs generation for internal OptionalInterfaceCache
+
+telepathy-qt4 0.5.16 (2011-05-01)
+=================================
+
+The "A brown paper bagful of Easter Eggs" release.
+
+Enhancements:
+ * fd.o #36526: Tp::Channel has now gained targetID() and targetContact()
+   accessors
+ * fd.o #35421: Update to spec 0.22.0:
+  - Added auto generated class for Conn.ContactBlocking
+  - Added Connection::ErrorDetails accessors for ConnectionError details
+    server-message, user-requested, expected-hostname and certificate-hostname
+ * Add support for Conn.SimplePresence.MaximumStatusMessageLength
+ * Add Features operator|(Features, Feature)
+ * ContactManager state now only advances to Success when both the roster and
+   the roster groups have been downloaded, if requested
+ * New class SimpleObserver that can be used to observe arbitrary channels on a
+   given Account.
+ * fd.o #33525 - Helper class(es) for observing calls
+   - New class SimpleCallObserver class which makes it easy to follow all
+     StreamedMedia communication on a given Account.
+
+Fixes:
+ * fd.o #35633: Contact features being erased after further contact upgrades,
+   e.g. from ContactFactory used together with Connection::FeatureRosterGroups
+ * Contact::groups() and ContactManager::groupContacts() not populated correctly
+   when using CMs with new-style ContactGroups D-Bus API
+ * Timeout in some CMs when introspecting contact list channels
+ * Crashes with Connection::FeatureSelfContact enabled (Manifested as an assert
+   for inFlightFeatures or pendingFeatures being hit)
+ * Crashes if a connection disconnects while FeatureRosterGroups is being
+   introspected (SIGSEGV in PendingOperation from ContactManager::Roster)
+ * Added correctly named pretty headers for the
+   Conn.ClientTypes/ContactGroups/ContactList/Saving interfaces
+ * Odd build system failures from feature checks which were anyway redundant due
+   to our recently bumped Qt 4.6+ dependency - checks now removed
+
+telepathy-qt4 0.5.15 (2011-04-12)
+=================================
+
+The "How to remove a hole from a set of holes" release.
+
+Enhancements:
+ * Performance improvements for introspection (becomeReady() latency)
+ * Some documentation improvements.
+
+Fixes:
+ * Incorrect scoping for Initial{Audio,Video} properties in Account channel
+   request methods
+ * Possible deadlock on connection status changes when FeatureConnected is
+   requested on a Connection
+ * Crash opportunities when introspecting a Connection which disappears in the
+   process (e.g. due to a network error or a CM crash)
+
+telepathy-qt4 0.5.14 (2011-04-05)
+=================================
+
+The "Now succeeds at failing!" release.
+
+The Qt dependency has been bumped to >= 4.6.0 for all future releases.
+
+Enhancements:
+ * AccountManager will now retry introspection 5 times with a 3 seconds interval
+   (or immediately if error is Timeout) if the introspection failed and
+   becomeReady() will fail if there is still an error after all tries.
+ * AccountManager will no more signal newAccount if the initial
+   introspection failed.
+ * ConnectionCapabilities and ContactCapabilities are now subclassable
+
+Fixes:
+ * Regression in 0.5.13 causing PendingReadys to not fail even if the object
+   being made ready disappears
+ * Discrepancy between the spec and implementation on initially assumed
+   non-locally-requested StreamedMediaChannel stream direction
+ * Reporting capabilities of offline accounts incorrectly because of a .manager
+   file parsing bug
+
+telepathy-qt4 0.5.13 (2011-03-23)
+=================================
+
+The "what is my id?" release.
+
+Enhancements:
+ * Added example to send messages using ContactMessenger.
+
+Fixes:
+ * ContactMessenger: Do not crash if an error occurred normalizing the contact
+   identifier but the ContactManager::contactsForIdentifiers() succeeded.
+ * Multiple parallel invalidated() signal connections created between DBusProxy
+   and ReadinessHelper
+
+telepathy-qt4 0.5.12 (2011-03-18)
+=================================
+
+The "Can I use the IM framework for, like, sending and receiving messages" release.
+
+Enhancements:
+ * fd.o #28753: Added SimpleTextObserver class which makes it easy to follow all
+   text communication on a given Account
+ * fd.o #35321: Added ContactMessenger class for easily sending and receiving
+   text messages with a particular contact
+
+Fixes:
+ * The Request & Handle API spuriously failing with SERVICE_CONFUSED because of
+   a race condition with introspecting the proxies
+
+telepathy-qt4 0.5.11 (2011-03-09)
+=================================
+
+The "more contacts?" release.
+
+Enhancements:
+ * fd.o#33121 - Bind Connection.ContactList.ContactsChangedWithID.
+
+Fixes:
+ * ContactManager will now create contact objects even if everything fails but
+   we have the contact handle/id and the connection has ImmortalHandles.
+ * Ensure FeatureRoster is ready before setting ContactManager state to
+   success even in fallback mode.
+
+telepathy-qt4 0.5.10 (2011-03-09)
+=================================
+
+The "am I connected?" release.
+
+Enhancements:
+ * Added Connection::FeatureConnected to help applications that only care about
+   connected connections. Setting this feature on the ConnectionFactory used
+   will make sure all connections signalled by the library are connected.
+
+Fixes:
+ * Ensure FeatureRoster is ready before setting ContactManager state to
+   success.
+
+telepathy-qt4 0.5.9 (2011-03-07)
+=================================
+
+The "planned engineering works for the last year" release.
+
+Enhancements:
+ * fd.o#28367 - Added High-level API for StreamTube channels
+ * fd.o#34228 - Added API on Account for requesting Channels and handling them
+   yourself, implemented properly using the Channel Dispatcher service
+ * Account::allowedPresenceStatuses() now has fallbacks to include "available"
+   and "offline" when that makes sense
+ * Removed some more private symbols from the shared library, resulting in
+   slightly faster load times
+ * Deprecated ConnectionCapabilities contact search related methods with
+   singular names and added plural versions of them, for API consistency.
+ * Contacts publish/subscription state updates for removed contacts are only
+   signalled after the ContactManager::allKnownContactsChanged signal is
+   emitted.
+
+Fixes:
+ * Redundant Contact::avatarDataChanged() emissions
+ * Connection::becomeReady() never finishing in state Connecting, which for
+   example prevents handling ServerAuthentication channels. NOTE: any code
+   incorrectly relying on the old buggy behavior of becomeReady() only finishing
+   once the connection goes Connected or Disconnected may need adjustment.
+ * Linking errors referencing the QtXml library
+ * Spec-incompliant building of Client names when uniquifying is requested from
+   ClientRegistrar
+ * Sensitive data in Account parameters being included in debug logs
+
+telepathy-qt4 0.5.8 (2011-02-22)
+=================================
+
+The "where are my contacts?" release.
+
+Enhancements:
+ * Account won't try to build a Connection object anymore if the connection
+   object path hasn't changed.
+ * Connection::FeatureRoster will now fail introspection if ContactList
+   interface is not supported, neither fallback roster channels.
+ * ContactManager now has a state() accessor and a corresponding stateChanged()
+   signal to keep track of the progress made in retrieving the contact list.
+ * Made Profile/Account/ContactManager debug output a bit cleaner.
+ * Cleaned up debug classes by removing unused code.
+
+Fixes:
+ * Properly replace "_" with "-" on Account::protocolName().
+
+telepathy-qt4 0.5.7 (2011-02-15)
+=================================
+
+The "fit for galoshes" release.
+
+Enhancements:
+ * Make the debug subsystem as no-op as possible when debugging is disabled at
+   runtime with Tp::enableDebug(false) and Tp::enableWarnings(false).
+ * fd.o#33123 - Bind Protocol.Avatars.
+ * fd.o#33124 - Bind Protocol.Presence.
+ * fd.o#33116 - Added support for passing hints to channel requests, also making
+   channel requests marginally more efficient CPU and memory wise in the
+   process.
+ * fd.o#33117 - Added support for extracting hints from ChannelRequests.
+ * fd.o#33117 - Added support for ChannelRequests reporting the channel created
+   for them on success, for further observation.
+
+Fixes:
+ * fd.o#34131 - Writing avatar cache into $HOME with scratchbox.
+ * Unstable generated future-* headers being installed (although nothing
+   declared in them was ever exported in the library).
+ * Possible crashes in Channel internal updateContacts function when just the
+   self handle changed.
+
+telepathy-qt4 0.5.6 (2011-01-27)
+=================================
+
+The "accept/decline" release.
+
+Enhancements:
+ * Update to spec 0.21.8.
+  - Added auto generated classes for Account.Addressing,
+    Channel.ServerAuthentication, Channel.SASLAuthentication,
+    Channel.Securable and Conn.MainNotification.
+
+Fixes:
+ * Properly ignore protocol with invalid names.
+ * Properly escape protocol name with "-" when constructing protocol object
+   path.
+ * Properly link against QtXml.
+ * Properly emit presencePublicationRequested if the contact current publish
+   state changes to PresenceStateAsk.
+ * Added missing fancy-headers for generated classes.
+
+telepathy-qt4 0.5.5 (2011-01-25)
+=================================
+
+The "I wish I had less contacts" release.
+
+Enhancements:
+ * CapabilitiesBase: Added method to check if file transfer is supported.
+
+Fixes:
+ * Contact list contacts are now guaranteed to contain the features set on
+   ContactFactory.
+ * Contact list groups are now automatically reintrospected when needed.
+ * Another attempt to fix a crash when contacts are removed from contact list
+   while the introspection is still running.
+ * fd.o#33457 - tp-qt4 uses non-atomic file write in avatar cache.
+
+telepathy-qt4 0.5.4 (2011-01-20)
+=================================
+
+The "the shower of golden paper bags" release.
+
+Enhancements:
+ * Presence publication requests are now reported more sensibly by the
+   ContactManager::presencePublicationRequested(Contacts) signal, with the
+   per-contact request message, if any, being in Contact::publishStateMessage()
+
+Fixes:
+ * ContactManager not emitting presencePublicationRequested if the request
+   message is empty.
+ * ContactManager sometimes crashing when contacts are removed using the new
+   ContactList interface.
+
+telepathy-qt4 0.5.3 (2011-01-17)
+=================================
+
+The "contact factorization" release.
+
+Enhancements:
+ * Added Tp::Contact::requestAvatarData()
+ * Added Tp::Contact::isContactInfoKnown()
+ * fd.o#32999 - operator< and qHash are not implemented for
+   Tp::ProtocolParameter.
+ * fd.o#33119 - Bind Connection.HasImmortalHandles.
+ * ContactFactory is no more a stub class. The features set in the
+   ContactFactory will be enabled in all contacts created by ContactManager and
+   the classes using it (Connection, Channel, etc).
+
+Fixes:
+ * Build failures on systems using GNU gold or the
+    --no-add-needed/--no-copy-dt-needed-entries linker flags
+
+telepathy-qt4 0.5.2 (2011-01-03)
+=================================
+
+The "I'm not subscribed now, right? WRONG" release.
+
+Enhancements:
+ * Added Or/NotFilter classes making it more flexible to use the Filter API.
+ * Channel invalidation reasons now more accurately describe what happened,
+   including a new error TP_QT4_ERROR_ORPHANED for the corresponding Connection
+   getting invalidated from whichever reason.
+ * Added support for ContactList and ContactGroups interfaces improving
+   performance of Connection::FeatureRoster/Groups when the CM supports the new
+   interfaces.
+ * ContactManager PendingOperations finish at consistent times wrt actual state
+   changes when used with a CM sporting the new ContactList/ContactGroups
+   interfaces
+ * Deprecated Contact/ContactManager signals carrying a
+   Channel::GroupMemberChangeDetails param for publish/subscription/block state
+   changes and added new signals that should be used in new code.
+ * fd.o #31464 - Added Channel::requestLeave() for leaving channels more
+   gracefully than closing them; StreamedMediaChannel::hangupCall now uses that
+
+Fixes:
+ * Properly install TelepathyQt4/ConnectionManagerLowLevel.
+ * A race condition causing proxies to be needlessly dropped from the factory
+   cache and hence new proxies built for a future request, and eventually
+   hitting an assert in onProxyInvalidated as a result
+ * Memory leaks when using Connection::FeatureRoster/RosterGroups where the
+   connection and roster channels were leaking.
+ * fd.o#29728 - ContactManager::addGroup and removeGroup are confusing/broken.
+ * fd.o#29735 - Roster API semantics are error / race condition prone.
+
+telepathy-qt4 0.5.1 (2010-12-08)
+=================================
+
+The "lazily evaluated birth" release.
+
+Fixes:
+ * fd.o #29731: Memory leaks reported by make check-valgrind
+ * Crash using a dangling (const!) iterator when a channel is removed from a
+   conference
+ * Crash when the an object path for an Account in an account set is quickly
+   reused after it's removed
+ * Emitting redundant {local,remote}SendingStateChanged signals from
+   StreamedMediaChannel
+ * ChannelDispatchOperation::channelLost failing to include Tp:: in the signal
+   arg type names, making it a tad hard to connect to
+
+telepathy-qt4 0.5.0 (2010-11-16)
+=================================
+
+The "new era of breakage" release.
+
+This release IS NOT API/ABI COMPATIBLE WITH EARLIER RELEASES. Further releases
+in the 0.5 development series will however be compatible with this release, as
+will any releases in a 0.6 stable series.
+
+For enhanced compatibility versions from 0.5 and earlier series can be parallel
+installed, with 0.5 bumping the .so major version to .so.1.  However, the
+development headers and pkgconfig file can't be parallel installed.
+
+Enhancements:
+ * fd.o #28793 - It is no longer necessary to keep the proxy / other object you
+   get a PendingOperation from manually referenced until the operation is
+   finished
+ * fd.o #28797 - generated client code (AbstractInterface subclasses) now allows
+   setting a non-default timeout for D-Bus method calls
+ * fd.o #29486 - Bare variant maps and string lists are no longer exposed in the
+   API unless absolutely necessary; instead they have wrapper classes with
+   easy access to well-known keys and values. Among other consequences, this
+   means AbstractClient implementations NEED TO CHANGE their method
+   implementation signatures to accept the wrapper classes instead of bare
+   QVariantMaps.
+ * Setting automatic/requested presence in Account now uses Tp::Presence
+ * Cleaned up the API and internal code by removing all deprecated classes,
+   methods and signals.
+ * Added Tp::Object intermediate base class for uniform QObject property change
+   notification. Connection, Channel and Contact will be propertified using it
+   in the future.
+ * Enumeration and flag types generated from the specification can now be used
+   in API without endangering ABI stability due to added padding members,
+   enhancing type safety in numerous instances where bare uints used to be
+   returned / taken as a parameter.
+ * Moved low-level functionality which shouldn't be used when using a full
+   Telepathy setup with a Mission Control service (Account Manager + Channel
+   Dispatcher) available from Connection and ConnectionManager to Lowlevel
+   classes, which can be accessed only if TP_QT4_ENABLE_LOWLEVEL_API is #defined
+   through a lowlevel() accessor on them
+ * Bare pointers are no longer returned from the API, instead either SharedPtr
+   or Qt implicitly shared handle classes are used (applicable to
+   Connection/ContactCapabilities, ProtocolInfo, etc)
+ * Tp::Contact is now a RefCounted and uses Tp::Feature like the rest of the
+   library.
+ * ClientRegistrar no longer guarantees that a singleton instance is returned
+   for create(). In particular, this relaxation allows us to implement an API in
+   the future which constructs a ClientRegistrar behind the scenes to be able to
+   request and handle channels without manually implementing an
+   AbstractClientHandler.
+ * The Filter API is now more future-proof, with the assumption that the filter
+   chain is ANDed together dropped. It will be possible to combine filters using
+   And/Or/Not filter combiners in the future, of which And is included now.
+ * The SharedPtr API has been improved. In particular, it's now safe to use it
+   as a QMap/QHash key and more difficult to use it incorrectly as a boolean or
+   an integer. The redundant WeakPtr class has been removed - use QWeakPointer
+   instead (which works with SharedPtr for all QObject classes).
+ * Tp::Contact friend list state change signals now have a details argument
+   (which will contain e.g. the request message for publishState() == Ask when
+    somebody adds you to their contact list, for example). This means that
+   code connecting to them NEEDS TO BE CHANGED.
+ * Account::haveConnection(Changed) and friends is now the less confusing
+   Account::connection(Changed) pair
+ * AccountManager filtering methods returning an AccountSet now have more
+   descriptive names without the Set suffix
+ * Account/Connection/Channel subclasses now can override the "core" feature
+   implied by isReady() and becomeReady(). In particular, this means that e.g.
+   ContactSearchChannel::isReady() with no arguments will only return true if
+   ContactSearchChannel::FeatureCore is ready in addition to
+   Channel::FeatureCore.
+ * StreamedMediaChannel is once again just for Channel.Type.StreamedMedia
+   channels, with the intermediate Call.DRAFT support and API removed. When Call
+   is undrafted, a new CallChannel will be added and StreamedMediaChannel
+   deprecated.
+ * Similarly, hacky Conference.DRAFT support IS REMOVED. Only the final
+   Conference interface is supported from now on.
+ * Everything that used to be called just Audio/Video/MediaCall etc now has
+   StreamedMedia in the name, to not conflict with future Call API.
+
+Fixes:
+ * fd.o #27204 - Codegen erroneously uses enums' value-prefix as the name for
+   the C++ enum
+ * fd.o #29998 - Connecting to signal Tp::TextChannel::chatStateChanged needs
+   typedef if not done in Tp namespace
+ * fd.o #27795 - Problems using Tp::SharedPtr as a key in QMap
+ * ChannelRequest not becoming ready successfully when there is no Account
+   specified
+ * ContactSearchChannel not initializing its private members correctly
+ * Compile errors with QT_STRICT_ITERATORS
+ * Some MSVC++ compilation issues (though there still are likely some remaining)
+ * ContactManager::allKnownContacts not picking up changes from the "stored"
+   list
+
+telepathy-qt4 0.3.14 (2010-11-05)
+=================================
+
+The "O HAI MY NAME IS CONFERENCE" release.
+
+Enhancements:
+* fd.o #30098 - Added an asynchronous property request API for generated
+  low-level proxies
+* Added high-level class for SimplePresence and changed Contact to use it,
+  deprecating the old methods using SimplePresence directly.
+* Added signals deprecation support to Contact.
+* Deprecated StreamedMediaChannel methods that only make sense when used with
+  Call.DRAFT channels (we're going to drop support for that particular draft in
+  0.5.0)
+* Deprecated all optional interface convenience methods.
+  The methods inherited from OptionalInterfaceFactory should be used directly
+  instead if access to low-level proxies is needed.
+* Add unnamed (anonymous, TargetHandleType == None) variants for text chats and
+  calls to ChannelClassSpec
+* Register all non-QObject public classes with the Qt meta-object system, so
+  they can e.g. be stored in QVariants.
+
+Fixes:
+* Unnamed text and StreamedMedia calls not included in the ChannelFactory
+  (channel class) -> (subclass, features) mapping
+* Some RequestableChannelClassSpec and ConnectionCapabilities methods having a
+  notion of "text chat with a person WHO is a conference", which doesn't exist
+
+telepathy-qt4 0.3.13 (2010-11-01)
+=================================
+
+The "sickness won't slow us down" release.
+
+Enhancements:
+* Added TP_QT4_ prefixed versions of all generated string constants marked as
+  QLatin1String for less verbose usage with Q_NO_CAST_FROM_ASCII
+* Added signals deprecation mechanism to warn when a deprecated signal is used.
+* fd.o #29451 - Make it possible to specify subclasses to use and features to
+  make ready on them in ChannelFactory
+* fd.o #29484 - RequestableChannelClass should have high-level API
+* fd.o #29486 - Add a ChannelClassSpec class for easily specifying Client
+  channel filters (and building Channel requests and ChannelFactory filters for
+  advanced usage)
+* Added more deprecated methods and remove some methods that should not be
+  deprecated. Now the library together with examples builds itself with
+  deprecation warnings enabled, to make sure no deprecate method is used
+  internally.
+* Deprecated autogenerated synchronous properties accessors/setters.
+
+Fixes:
+* fd.o #30223 - telepathy-qt4's codegen doesn't deal with tp:external-type
+  properly
+* fd.o #30923 - Fix compilation errors in 0.3.12
+  - The tp-glib version requirement in 0.3.12 was too old
+  - Compile error in the tp-glib based test library
+* fd.o #31087 - ChannelRequest immutable property extraction relying on
+  undefined method argument evaluation order -> failing on some toolchains
+* TextChannel never finishing introspection of FeatureMessageQueue with some
+  older services
+* Properly document ContactSearchChannel signals.
+* AccountManager and AccountSet getting confused and hitting asserts with
+  certain sequences of introspecting and adding/removing accounts, most
+  prominently when removing and readding an account
+* Useless PendingReady code having potential for crashes in corner-cases but
+  serving no useful purpose (now removed)
+* Code generator changes not always triggering rebuilds properly
+
+telepathy-qt4 0.3.12 (2010-10-15)
+=================================
+
+The "break is coming" release.
+
+New API:
+* Added ContactSearch high-level class.
+* Added constructors/accessors for using Channel/ContactFactory in Connection.
+* Added high-level class for ContactInfoFieldList.
+
+Enhancements:
+* Updated to spec 0.21.1:
+  - Added auto generated classes for Conn.ClientTypes/ContactGroups/ContactList/
+    PowerSaving and Chan.ServerTLSConnection.
+  - Make use of Observer.ObserverInfo.request-properties map, making
+    ChannelRequest use the immutable properties defined in the map if
+    available, avoiding unneeded introspection.
+  - Added support for Conference interface alongside Conference.DRAFT support.
+  - Added ConnectionCapabilities methods to check conference support.
+* Improved Account::capabilities() to take Profile::unsupportedChannelClasses
+  into account.
+* Improved StreamedMediaChannel test coverage to yellow (> 80%).
+
+Fixes:
+* Properly install TelepathyQt4/Farsight/global.h.
+* fd.o#30386 - Regression: StreamedMediaChannel::streamAdded is not emitted when
+  one requests a new stream using a StreamedMedia channel type.
+* Fixed MediaStream::requestDirection when using a Call channel type.
+* Un-deprecate AccountManager methods to retrieve accounts given the account
+  paths.
+* Some small documentation fixes.
+
+telepathy-qt4 0.3.11 (2010-10-04)
+=================================
+
+The "farewell hated friend" release.
+
+Enhancements:
+* fd.o #24648 - Port Telepathy-Qt4's build system from autotools to cmake,
+  resulting in faster builds. All targets supported by the previous build system
+  are still supported, and some new were added, notably individual targets for
+  unit tests and callgrind support.
+* fd.o #29672 - Support for Profiles - a way to describe different IM/VoIP
+  services by data files (e.g. Google Talk for the XMPP/Jabber protocol)
+* fd.o #29699 - ChannelRequest immutable data is now accessible even before it's
+  fully ready - this is useful for e.g. early initialization of channel context
+  in applications with the AbstractClientHandler requestNotification API
+* Some performance optimizations in ReadyObject, ReadinessHelper and Channel
+
+Fixes:
+ * Race conditions uncovered by Qt 4.7 in TestAccountBasics and TestConnRoster
+
+telepathy-qt4 0.3.10 (2010-09-16)
+=================================
+
+The {bool b; if (b == false || b == true || b == 99) { /*...*/ }} release.
+
+Enhancements:
+* fd.o #29609 - ClientRegistrar and all related classes now use Factories too,
+  which means if you use the factory-enabled create() variants such as
+  create(AccountManagerPtr), you can share account and connection proxies with
+  the rest of your application, and/or make them be ready by the time your
+  addDispatchOperation/handleChannels/observeChannels implementation is called
+* fd.o #29090 - Added support to filter accounts by their capabilities (whether
+  you can do room chats, voice calls, etc, using a given account)
+* Added Account::capabilities(), which automatically gets the capabilities from
+  a connected Connection if there's one, or the protocol object if there isn't
+* Generic Filter framework, currently only used for Account filtering, but in
+  the future also for filtering Contacts
+* ChannelRequest is now also using the same Account/Connection etc objects than
+  the rest of the application
+* PendingChannelRequest now holds a reference to its Account, so you don't have
+  to keep a reference to the Account in your application's scope for the channel
+  request to succeed
+* There are now variants of the ContactManager signals
+  presencePublicationRequested, groupMembersChanged and allKnownContactsChanged
+  which carry the details parameter (contains things like the message and the
+  reason)
+
+Fixes:
+* Memory leak when using PendingComposite
+* Memory leak in QDBus triggered by ClientHandlerRequestsAdaptor code (there's a
+  workaround, and the actual bug is reported as QTBUG-13562)
+* The PendingOperation returned by Connection::requestConnect() finishing even
+  if the connection wasn't connected yet
+* Hitting an assert in cornercases for calling setIntrospectedCalled twice in
+  Account Avatar introspection
+* Account::changingPresence() not being initialized correctly
+
+telepathy-qt4 0.3.9 (2010-09-10)
+================================
+
+The "THE ORIGINAL SWEAT FACTORY^W^WSAUNA MASTER" release.
+
+Enhancements:
+* fd.o #29451 - Add Factory infrastructure, enabling:
+   - sharing accounts/connections between different parts of the library better
+     (this will soon enable us to eliminate duplicate objects between
+     AbstractClient implementations and the AM)
+   - requesting that all accounts/connections/channels/contacts are always ready
+     with given features
+   - automatically constructing application-defined subclasses whenever eg. an
+     Account is constructed
+* Add finished and usable AccountFactory and ConnectionFactory APIs, and also
+  added API/ABI placeholder ChannelFactory and ContactFactory APIs which will be
+  more useful soon
+* fd.o #29606 - Use factories in AccountManager and Account for constructing
+  Accounts and Connections -> if desired features are enabled, one no longer
+  needs to make any Account::becomeReady and Connection::becomeReady calls when
+  using an AccountManager
+* fd.o #29409 - Use QDBusServiceWatcher if available, reducing wakeups
+* fd.o #20034 - Add avatar cache implementation and featureAvatarData on
+  Tp::Contact using it.
+* Made Channel::groupSelfContact() always have some contact for the user as long
+  as the channel is ready (if the group has none, the Connection one is used)
+* (Side-effect from other work) Add fallbacks to channel requests in case the
+  service doesn't provide the InitiatorHandle or the Requested property
+* Made Channel debug output a bit cleaner
+* Added Connection::ErrorDetails to represent additional information about error
+  conditions causing Connection invalidation
+* Made the Connection API guide the applications better to correct error
+  handling practices (all error handling should be done in invalidated() slots)
+* Add SharedPtr::qobjectCast(), an upcasting constructor and pointer to const
+  support
+
+Fixes:
+* A race condition which could result in Channel ignoring a member change (only
+  applicable to services with Group.MembersChangedDetailed)
+* A bug where Channel::groupMembersChanged(only removed members) isn't always
+  emitted if the local user is not a member of the group - probably means
+  signaling contacts being removed from roster groups didn't work either
+* Yet another TestConnRosterGroup race condition (freq: 6 in 20000 runs)
+* fd.o#29930 - Build error with glib 2.25
+* ReadyObjects incorrectly handling feature dependencies
+* Account/Connection/Channel readifying themselves even if not asked to
+* Handle reference management screwing up if there are multiple connections
+  online on a single CM
+* Lots of crash opportunities when a PendingOperation is underway when its
+  parent-ish object is unreferenced in an application
+
+telepathy-qt4 0.3.8 (2010-08-24)
+================================
+
+The "a weekend (and quite a bit of the Monday early hours) well spent" release.
+
+Enhancements:
+* fd.o#29395 - Update to spec 0.19.10
+* fd.o#29461 - Update to spec 0.19.11
+* fd.o#28948 - Added docs/tests/missing Qt properties to AccountSet
+* fd.o#29357 - Account::iconName() and icon() now always return sensible
+               non-empty values
+* fd.o#28819 - {Account,ConnectionManager}::protocolInfo() has been improved
+                - Recent CMs are now introspected with less D-Bus calls
+                - New API capabilities(), vcardField(), englishName(),
+                  iconName() on ProtocolInfo and ManagerFile
+* fd.o#25126 - Some redundant debug output has been removed
+* fd.o#27460 - Connection now introspects recent CMs with less D-Bus traffic
+* Connection::contactManager and ::capabilities are now less of a death-trap
+  - now always are non-NULL
+  - operations fail with descriptive errors if the Connection isn't valid
+  - they used to go NULL at an indeterminate time when eg. disconnecting
+* Account::connection() object path parsing has been optimized
+
+Fixes:
+* fd.o#28947 - Account::filterAccounts doc does not properly format the example
+  code
+* fd.o#28651 - Cannot receive files using gabble 0.9
+* fd.o#29145 - AccountSet::accountRemoved is emitted for newly-created
+  non-matching accounts
+* fd.o#29699 - ChannelRequest incorrectly checks immutable properties
+* Broken iteration code in MediaStream which often led to busy-looping forever
+* (Harmless) uninitialized memory use reported by valgrind in Account internals
+
+Test suite improvements:
+* fd.o#29702 - Unit tests now execute reliably, and 10-30x faster
+* Added the script repeat-tests.sh for repeating tests to detect race conditions
+* Added a conservative 10 minute per test watchdog to detect hung-up test logic
+  - Should be plenty even for heavily loaded VM build bots, as the whole test
+    suite now executes in 2.4-2.5 seconds on my laptop
+* The StreamedMedia legacy and Future.Call tests now actually have different
+  names to be able to distinguish between them in the test logs
+* Test coverage reporting now works again; turns out we need to disable building
+  the shared library when it is enabled
+* amd64 memory use errors (pointer size != int size) calling g_object_new() in
+  tests have been fixed
+
+telepathy-qt4 0.3.7 (2010-07-12)
+================================
+
+The “not as bad as Pepsi Max” release.
+
+Enhancements:
+* fd.o#28927 - Generate code for Channel.Interface.{Anonymity,ServicePoint}
+  (wjt)
+* fd.o#28942 - Refresh HACKING and README (wjt)
+* Update to spec version 0.19.9, adding Read and Deleted members to
+  MessageSendingFlagReport, DeliveryReportingSupportFlagReceive, and
+  DeliveryStatus (wjt)
+
+Fixes:
+* fd.o#28945 - AccountManager::accountsByProtocol() returns an empty set
+* fd.o#28946 - AccountSet should indicate whether the filter used is valid
+
+telepathy-qt4 0.3.6 (2010-07-01)
+================================
+
+The "I've been thinkin' a lot today" release.
+
+New API:
+
+* Added Qt properties to Account.
+* Added filter API to AccountManager to filter accounts based on Qt properties.
+  Includes a new class AccountSet that represents a set of accounts that match a
+  certain filter and that updates automatically based on accounts Qt properties
+  changes.
+* fd.o#25035 - Add API to AccountManager to get a list of Account objects, all
+  ready.
+* fd.o#28825 - Bind Account.Service
+* fd.o#28828 - Add Qt properties to ConnectionManager
+* fd.o#28861 - Add auto generated interface and Connection accessor for
+  Connection.Cellular interface
+
+Enhancements:
+* fd.o#28302 - Sync test CM with telepathy-glib
+* fd.o#28827 - Add valgrind support to tests
+* fd.o#28850 - Update to spec 0.19.8
+
+Fixes:
+* fd.o#28489 - manager-file.py missing in tp-qt4 0.3.4 tarball
+* fd.o#28826 - KeyFile should support spaces in key names and string list params
+  that don't terminate with ;
+* fd.o#28829 - Contact should not fail if /capabilities attr is empty
+* fd.o#28830 - Channel does not parse immutable properties correctly
+* fd.o#28831 - Connection FeatureRosterGroups does not work after
+  FeatureAccountBalance support was added
+
+telepathy-qt4 0.3.5 (2010-06-21)
+================================
+
+The "Think I'll get it done yesterday" release.
+
+New API:
+* fd.o#28018: Bind Account.ChangingPresence.
+* fd.o#28552: Bind Account.ConnectionError/Details.
+
+Enhancements:
+* fd.o#28536: update to spec 0.19.7 (ConnectionError, Anonymity, ServicePoint,
+  ChatStates).
+
+Fixes:
+* Update with-session-bus.sh from telepathy-glib, fixing a bashism. (smcv)
+* Fixed coverity issues with call example.
+* Fixed AbstractClient documentation. (albanc)
+* telepathy-qt4-farsight telepathy-glib dependency is now >= 0.8.1. (albanc)
+
+telepathy-qt4 0.3.4 (2010-05-23)
+================================
+
+The "Cause time takes time, ya know" release.
+
+New API:
+* fd.o#28143: Implement Connection.Balance interface support.
+
+Fixes:
+* Fix strict QtDBus demarshalling which was causing crashes when using
+  qdbus_cast from a SocketAddressIP*. (drf)
+
+telepathy-qt4 0.3.3 (2010-05-09)
+================================
+
+The "generic fun" release.
+
+New API:
+* fd.o#27671: ContactInfo high-level API.
+
+Enhancements:
+- Added Call.Content.Remove support to StreamedMediaChannel.
+
+Fixes:
+- Fixed a leak in Connection::gotCapabilities,
+- Correctly remove object path from Account::uniqueIdentifier.
+
+telepathy-qt4 0.3.2 (2010-04-23)
+================================
+
+The "poisoned with anti-coffee" release.
+
+New API:
+* fd.o#27379: Add a new signal, allKnownContactsChanged. (drf)
+* fd.o#27677: Add Observer.Recover support.
+* Added support for retrieving contacts location.
+
+Enhancements:
+* Added example application to list all supported protocols.
+* fd.o#27670: Updated to spec 0.19.5.
+
+Fixes:
+* Fixed compilation (more specific, moc generation). The code was
+  triggering QTBUG #2151. (drf)
+* Correctly handle UTF-8 in code generator. (wjt)
+* Fixed text-chan test race condition. (drf)
+
+telepathy-qt4 0.3.1 (2010-03-30)
+================================
+
+The "it's all about coffee" release.
+
+Enhancements:
+
+* Added/Improved documentation for various classes and some minor documentation
+  style fixes.
+
+Fixes:
+* Fixed bug where StreamedMediaChannel::requestStream returned PendingOperation
+  was never finishing.
+
+telepathy-qt4 0.3.0 (2010-03-18)
+================================
+
+The "With My Own Two Hands" release.
+
+Dependencies:
+
+* Full regression tests now require telepathy-glib >= 0.10.0 (telepathy-glib
+  is still optional)
+
+New API:
+
+* Channel: Added Conference/MergeableConference/Spplitabble interfaces support.
+* StreamedMediaChannel: Added Call interface support.
+
+Enhancements:
+
+* Updated to 0.19.1 spec.
+* Better tests directories organization (complete separation of glib/python
+  specific code).
+
+Fixes:
+
+* fd.o#25422: generate code for Call draft API.
+* fd.o#26117: Add Call interface support to StreamedMediaChannel.
+* fd.o#26881: Remove the usage of QString::fromAscii.
+* fd.o#27124: Missing docs for some classes.
+* fd.o#27125: Add support to QT_NO_CAST_FROM_ASCII.
+* Fixed bug when Channel was never getting ready.
+
+telepathy-qt4 0.2.2 (2010-02-22)
+================================
+
+The "no pain, no gain" release.
+
+New API:
+
+* AbstractClientHandler: Added support to set Handler Capabilities property.
+
+Fixes:
+
+* fd.o #25659: ObserveChannels implementation might actually return immediately.
+
+telepathy-qt4 0.2.1 (2009-12-04)
+================================
+
+The "all you want, only better" release.
+
+Fixes:
+
+* fd.o #25058: reduce the scope of our workaround for Qt 4.5 bug
+  <http://qt.gitorious.org/qt/qt/merge_requests/1657>, fixing compilation
+  against Qt versions >= 4.6 beta, where this bug has been fixed (smcv)
+
+* Avoid the installed AccountManager (if any) being service-activated during
+  distcheck under some circumstances (smcv)
+
+* Compile with symbols hidden by default, explicitly export a few
+  symbols that were mistakenly not exported, and improve the code generation
+  tools to be more correct about their exports (smcv)
+
+* Improve the code-generation tools to cope with UTF-8 in the spec (wjt, smcv)
+
+* Enable Automake 1.11 silent building (./configure --enable-silent-rules
+  to enable this) (wjt)
+
+Code generation release notes:
+
+* qt4-types-gen.py and qt4-client-gen.py previously forced the generated
+  classes to be exported, in a way that's not actually correct for code outside
+  telepathy-qt4 (the TELEPATHY_QT4_EXPORT macro).
+  
+  They now use a macro set by --visibility, defaulting to nothing; if you're
+  building a shared library with -fvisibility=hidden, or supporting Windows,
+  you may need to use --visibility=YOUR_LIB_EXPORT when running these scripts.
+
+  See TelepathyQt4/global.h or QtDBus/qdbusmacros.h for an example of setting
+  up such a macro (unfortunately, the only correct way to do this seems to be
+  for each shared library to define its own).
+
+telepathy-qt4 0.2.0 (2009-11-10)
+================================
+
+The "I Shot the Sheriff" release.
+
+API changes:
+
+* Connection: Changed status/statusReason/statusChanged to use enums
+  Tp::Connection::Status and ConnectionStatusReason.
+* Connection: Renamed getContactAttributes method to contactAttributes.
+
+Fixes:
+
+* fd.o#23370: Make better use of telepathy-spec 0.17.27 errors.
+* fd.o#24422: Account removal should be represented by
+  TELEPATHY_QT4_ERROR_OBJECT_REMOVED.
+
+telepathy-qt4 0.1.12 (2009-11-05)
+================================
+
+The "an enzyme that breaks down tigers" release.
+
+New API:
+
+* TextChannel: Added ChatState interface support.
+
+API changes:
+
+* TextChannel: send() methods now receive a flags parameter, so we proper
+  support delivery reports.
+
+Fixes:
+
+* pkgconfig: Added missing QtNetwork dependency.
+
+telepathy-qt4 0.1.11 (2009-10-08)
+================================
+
+The "on more to go" release.
+
+New API:
+
+* FileTransferChannel: Added methods to access FileTransfer interface
+  properties.
+* IncomingFileTransferChannel: Added specialized class for handling incoming
+  file transfers.
+* OutgoingFileTransferChannel: Added specialized class for handling outgoing
+  file transfers.
+* CapabilitiesBase: Added base class to represent contact/connection
+  capabilities.
+* ContactCapabilities: Added specialized class that inherits CapabilitiesBase to
+  represent contact capabilities.
+* ConnectionCapabilities: Added specialized class that inherits CapabilitiesBase
+  to represent connection capabilities.
+* Contact: Added ContactCapabilities interface support.
+* Connection: Added capabilities (RequestableChannelClasses) support.
+* Account: Added ensureAudio/VideoCall methods that make use of
+  InitialAudio/Video properties when creating StreamedMedia channels.
+* Channel: Added streamTubeInterface/tubeInterface methods.
+  (Patch from Abner Silva <abner.silva@collabora.co.uk>).
+* PendingVariant: Added pending operation helper class for D-Bus methods that
+  return a variant as result.
+
+API changes:
+
+* Renamed PendingVoidMethodCall to PendingVoid.
+* Changed PendingVoid/Success/Failure constructor to receive parent as last
+  parameter.
+
+Enhancements:
+
+* Added examples for handling incoming/outgoing file transfers,
+  examples/file-transfer/
+* Added C++ visibility support.
+* Updated to 0.18.0 spec.
+
+Fixes:
+
+* fd.o #24324: Account::create/ensureXXX should receive a const QDateTime & for
+  userActionTime
+* Explicitly use uint for TargetHandleType.
+
+telepathy-qt4 0.1.10 (2009-08-25)
+================================
+
+The "not yet stable" release.
+
+New API:
+
+* StreamedMediaChannel: Added Hold and DTMF interface support.
+
+Enhancements:
+
+* Moved OptionalInterfaceFactory::InterfaceSupportedChecking docs from DBusProxy
+  to OptionalInterfaceFactory.
+* Use struct Private instead of class Private for consistence.
+* Removed cli/Client from header guards.
+
+Fixes:
+
+* fd.o #20269: Channel's Contact objects should initially have no features.
+* fd.o #21335: Implement Group self-handle removal reasons.
+* fd.o #23040: Running connection managers appear twice in
+  ConnectionManager::listNames result.
+* fd.o #23282: Channel should update ReadinessHelper with the supported
+  interfaces.
+
+telepathy-qt4 0.1.9 (2009-07-23)
+================================
+
+The "never too late" release.
+
+New API:
+
+* OptionalInterfaceFactory: Added methods interfaces and optionalInterface
+  and removed duplicated code in all OptionalInterfaceFactory subclasses.
+* Added ContactManager allKnownGroups, addGroup, removeGroup, groupContacts,
+  addContactsToGroup and removeContactsFromGroup methods.
+* Added ContactManager groupAdded, groupRemoved and groupMembersChanged signals.
+* Added Contact groups, addToGroup and removeFromGroup methods.
+* Added Contact addedToGroup and removedFromGroup signals.
+
+API changes:
+
+* Changed ProtocolParameter requiredForRegistration method to
+  isRequiredForRegistration to make it consistent with other bool returning
+  getters.
+
+Enhancements:
+
+* Changed all classes to follow coding-style.
+* Moved documentation to source file for all classes.
+* Standardize class definition in all classes:
+  * Moved public xxxInterface methods definition to the end of the public
+    methods declaration.
+  * Added friend struct Private declaration.
+  * Added Q_DISABLE_COPY(xxx) to all classes that can not be copied.
+  * Moved Q_DISABLE_COPY(xxx) declaration to the top of the class definition,
+    before the public keyword.
+  * Reorder public, protected, SIGNALS declaration as follows:
+     public
+     public Q_SLOTS
+     Q_SIGNALS
+     protected
+     protected Q_SLOTS
+     private Q_SLOTS
+     private
+  * Moved friend class xxx definitions to be placed right below private keyword
+* ChannelDispatchOperation: Emit invalidated with
+  TELEPATHY_QT4_ERROR_OBJECT_REMOVED when ChannelDispatchOperation.Finished is
+  received.
+* Added/Improved some documentation.
+
+Fixes:
+
+* ClientApproverAdaptor: Use the dbus fully qualified name to get the connection
+  property (Patch from George Kiagiadakis <kiagiadakis.george@gmail.com>).
+* Fixed bug 20268: Connection's selfContact object should initially have no
+  features.
+* Fixed bug 20080: KeyFile: ";" as a list may be mis-parsed.
+* Fixed bug 20082: KeyFile: double (and other types?) not correctly tested.
+* Fixed bug 20353: No d-pointer in Channel::GroupMemberChangeDetails.
+* Fixed bug 20033: Contact / ContactList Group integration.
+
+telepathy-qt4 0.1.8 (2009-06-16)
+================================
+
+The "Every Good Boy Deserves Frontalot" release.
+
+New API:
+
+* Added PendingChannelRequest class to be used when requesting channels using
+  ChannelDispatcher through Account.
+* Added Account methods to request/create channels using ChannelDispatcher
+  (ensureTextChat, ensureTextChatroom, ensureMediaCall, createChannel and
+  ensureChannel)
+
+Enhancements:
+
+* Updated to telepathy-spec 0.17.26
+
+Fixes:
+
+* ChannelDispatchOperation: Read Channels property instead of incorrectly
+  reading ChannelDetailsList (Patch from George Kiagiadakis
+  <kiagiadakis.george@gmail.com>).
+
+telepathy-qt4 0.1.7 (2009-06-02)
+================================
+
+The "approver" release.
+
+New API:
+
+* Added Client Approver support.
+* Added ChannelDispatchOperation high-level class.
+
+Bugfixes:
+
+* Fixed bug 21988: Channel does not work properly if the parent
+  connection object is not ready
+* Fixed bug 21993: TextChannel does not become ready until first message is
+  received if FeatureMessageQueue is enabled.
+
+telepathy-qt4 0.1.6 (2009-05-28)
+================================
+
+The "So hot, I have a fever" release.
+
+New API:
+
+* Added Channel::immutableProperties public method.
+
+Enhancements:
+
+* Added ChannelFactory, internal class to create channels based on
+  their types.
+* PendingChannel: Use ChannelFactory to create channels.
+
+Bugfixes:
+
+* Proper define AbstractClientPtr.
+* ClientRegistrar: Fixed Observer adaptor introspection data.
+* ClientRegistrar: Use ChannelFactory to create Channels.
+
+telepathy-qt4 0.1.5 (2009-05-19)
+================================
+
+The "do not look at the conductor" release.
+
+New API:
+
+* Added Client support (Handler, Observer).
+  * Added ClientRegistrar, class responsible for registering clients and proper
+    exporting their D-Bus interfaces.
+  * Added AbstractClientObserver, AbstractClientApprover (skeleton) and
+    AbstractClientHandler. Clients should inherit one or some combination of
+    these, by using multiple inheritance, and register themselves using
+    ClientRegistrar::registerClient() in order to become a Client.
+
+* Added ChannelRequest high-level class.
+
+telepathy-qt4 0.1.4 (2009-05-08)
+================================
+
+The "global military-industrial complex is subsidising your iPod" release.
+
+Dependencies:
+
+* Creating accounts, and possibly updating their parameters, now requires an
+  AccountManager implementing telepathy-spec 0.17.24, such as
+  telepathy-mission-control >= 5.0.beta70 (in particular, beta 69 won't work,
+  and the KWallet-based account manager will also need updating)
+
+API changes:
+
+* Renamed SharedData header file to RefCounted to follow class name.
+
+New API:
+
+* Update to telepathy-spec 0.17.24, breaking some D-Bus APIs:
+  * fd.o #21619: Account::updateParameters() returns a PendingStringList of
+    the parameters that won't be changed until reconnection takes place
+  * Account::reconnect() added (newer MC versions don't violate telepathy-spec
+    by reconnecting automatically when parameters are changed)
+  * AccountManager::supportedAccountProperties() added
+  * AccountManager::createAccount() takes an optional dict of properties
+    (the valid keys are in supportedAccountProperties())
+
+* Enhance PendingStringList to have a constructor from a QDBusPendingCall
+
+Bugfixes:
+
+* Don't try to run Python tests unless we have the gobject module (the tests
+  use it)
+
+telepathy-qt4 0.1.3 (2009-04-22)
+================================
+
+The "what are you scared of?" release.
+
+Dependencies:
+
+* Full regression tests now require telepathy-glib >= 0.7.28 (telepathy-glib
+  is still optional)
+
+API changes:
+
+* Namespace simplification: Telepathy::Client::Channel (etc.) are now
+  Tp::Channel, similar to telepathy-glib's TpChannel. Auto-generated client
+  classes like Telepathy::Client::ChannelInterface are now
+  Tp::Client::ChannelInterface.
+
+* AccountManager, Account, ConnectionManager, Connection, Channel and Channel
+  subclasses now inherit from Tp::RefCounted and are used together with
+  Tp::SharedPtr/Tp::WeakPtr, shared and weak pointer classes using ideas from
+  Qt, glibmm, Boost and WebKit. The constructor is now protected (in order to
+  support custom classes) and a public create method that returns a SharedPtr
+  was added. This is an attempt to avoid memory leaks as much as possible, see
+  http://lists.freedesktop.org/archives/telepathy/2009-March/003218.html for
+  more details.
+
+* Instead of forward-declaring Telepathy::Client::Channel and using
+  a variable of type Telepathy::Client::Channel *, you should now include
+  <TelepathyQt4/Types> and use either Tp::ChannelPtr, which is a
+  reference-counted shared pointer, or Tp::WeakPtr<Tp::Channel>, which is the
+  weak counterpart.
+* Header simplification: the public headers now look like
+  <TelepathyQt4/Channel>, i.e. without the Client subdirectory.
+
+* PendingHandles now finish successfully on non fatal errors (InvalidArgument,
+  InvalidHandle, NotAvailable). PendingHandles::invalidNames/invalidHandles
+  should be used to check if a non-fatal error occurred and some handle could
+  not be acquired.
+
+Enhancements:
+
+* Updated to telepathy-spec 0.17.23
+
+* TelepathyQt4Farsight is a new mini-library with glue code to connect
+  telepathy-farsight to Telepathy-Qt4. Handlers for streamed media channels
+  with media signalling can #include <TelepathyQt4/Farsight/Channel> and pass
+  their Tp::StreamedMediaChannel to Tp::createFarsightChannel, then hook up
+  the resulting TfChannel to a GStreamer pipeline of their choice.
+
+* StreamedMediaChannel has a new handlerStreamingRequired method so you can
+  check whether the handler needs to carry out the streaming
+
+* fd.o #21336: Channels now indicate whether a message is expected when
+  doing various Group operations
+
+* fd.o #21337: Account supports the new HasBeenOnline property
+
+Fixes:
+
+* fd.o #20583: Contact objects don't work without the Contacts interface.
+
+* fd.o #20584: Contact object creation doesn't survive bad IDs or handles.
+
+telepathy-qt4 0.1.2 (2009-03-23)
+================================
+
+The "robotic automatic hoover" release.
+
+Dependencies:
+
+* Full regression tests now require telepathy-glib >= 0.7.27 (telepathy-glib
+  is still optional)
+
+* telepathy-farsight >= 0.0.4 is a new optional dependency
+
+API changes:
+
+* AccountManager, Account, ConnectionManager, Connection, Channel
+  now inherit QSharedData and are used together with
+  QExplicitlySharedDataPointer.
+  This is needed so we can create shared pointers based on the object itself,
+  instead of doing hacks to find the shared pointer related to a given object.
+  See http://lists.freedesktop.org/archives/telepathy/2009-March/003168.html for
+  more details.
+
+* Channel Features are now Feature objects, not integers
+
+* The Feature class is now in its own header, <TelepathyQt4/Feature>
+
+Enhancements:
+
+* The skeletal StreamedMediaChannel class from 0.1.0 has been expanded to
+  cover all the functionality of the Telepathy StreamedMedia interface
+
+* PendingConnection, PendingAccount etc. have busName and objectPath
+  methods where necessary, so that objects of custom classes can be
+  constructed
+
+* Features can now be considered critical, meaning that failure to set them up
+  leads to failure of becomeReady() - this should only be used for features
+  that should never fail unless the service is buggy, like Connection and
+  Channel core functionality
+
+* examples/call/ is an example of how to use StreamedMediaChannel, which can
+  make and receive XMPP Jingle calls using telepathy-gabble
+  (this feature requires telepathy-farsight and GStreamer)
+
+Fixes:
+
+* When introspection of a Feature fails, the D-Bus error is propagated as the
+  failure reason of becomeReady()
+
+* Fix a memory leak in TextChannel
+
+telepathy-qt4 0.1.1 (2009-03-05)
+================================
+
+The "PresencePublicationAuthorizationRequestRejection" release.
+
+API changes:
+
+* PendingReadyAccount, PendingReadyAccountManager, PendingReadyConnection,
+  PendingReadyConnectionManager have all been replaced by the PendingReady
+  class
+
+* Account, AccountManager, Connection and ConnectionManager features are now
+  QSet<uint>, not bitfields
+
+* Plural contacts are generally represented by a QSet<QSharedPointer<Contact> >
+  instead of a QList<QSharedPointer<Contact> > (with a new typedef,
+  Telepathy::Client::Contacts, which must be used in signal/slot connections)
+
+Enhancements:
+
+* Added Connection::FeatureRoster, which, when enabled, adds contact list
+  (a.k.a. roster/buddy list) functionality to the ContactManager and
+  Contact objects
+
+* Improved maintainability of Account, AccountManager, Connection and
+  ConnectionManager becoming ready
+
+* A QSharedPointer<Contact> is now hashable with qHash, meaning contacts can
+  be QSet or QHash members
+
+* Added a trivial contact list user interface, examples/roster/roster
+
+Fixes:
+
+* The client library no longer attempts to enforce group add/remove flags:
+  whatever change the user requests is passed on to the connection manager
+  (which might reject it)
+
+* PendingReady objects returned by Connection::becomeReady() have the
+  Connection as parent, rather than an internal object that isn't useful
+  to library users
+
+telepathy-qt4 0.1.0 (2009-02-26)
+================================
+
+The "pending operation" release.
+
+This first release of telepathy-qt4 features high-level API for the following:
+
+* Manipulating accounts on a Telepathy AccountManager implementation as
+  described by telepathy-spec 0.17.x, such as Mission Control 5 (beta versions
+  currently available)
+
+* Manipulating Telepathy connection managers via the ConnectionManager and
+  Connection core API
+
+* Setting your own presence on a connection manager supporting the
+  SimplePresence interface
+
+* Requesting channels from a connection manager supporting the Requests
+  interface
+
+* Reading contacts' aliases etc. on a connection manager supporting the
+  Contacts interface
+
+* Sending and receiving messages on Text channels, with or without the
+  Messages interface
+
+In addition, lower-level auto-generated accessors are provided for all the
+functionality of telepathy-spec version 0.17.19.
+
+Notable functionality that is currently missing, but will be added soon,
+includes:
+
+* Manipulating a server-stored contact list
+
+* Controlling VoIP calls in StreamedMedia channels
+
+/* ex: set textwidth=80: */
