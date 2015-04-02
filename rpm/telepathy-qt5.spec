@@ -30,8 +30,7 @@ BuildRequires:  pkgconfig(Qt5Xml)
 BuildRequires:  pkgconfig(farstream-0.1)
 BuildRequires:  pkgconfig(telepathy-glib) >= 0.17.5
 BuildRequires:  pkgconfig(telepathy-farstream) >= 0.4.0
-BuildRequires:  pkgconfig(gstreamer-0.10)
-BuildRequires:  pkgconfig(gstreamer-interfaces-0.10)
+BuildRequires:  pkgconfig(gstreamer-1.0)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  python
 BuildRequires:  dbus-python
