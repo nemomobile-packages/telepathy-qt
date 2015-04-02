@@ -27,7 +27,7 @@ BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Network)
 BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(Qt5Xml)
-BuildRequires:  pkgconfig(farstream-0.1)
+BuildRequires:  pkgconfig(farstream-0.2)
 BuildRequires:  pkgconfig(telepathy-glib) >= 0.17.5
 BuildRequires:  pkgconfig(telepathy-farstream) >= 0.4.0
 BuildRequires:  pkgconfig(gstreamer-1.0)
