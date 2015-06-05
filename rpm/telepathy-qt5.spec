@@ -19,7 +19,6 @@ Source1:    INSIGNIFICANT
 Source2:    mktests.sh.in
 Source3:    runDbusTest.sh.in
 Source4:    runTest.sh.in
-Source100:  telepathy-qt5.yaml
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(Qt5Core)
@@ -28,11 +27,10 @@ BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Network)
 BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(Qt5Xml)
-BuildRequires:  pkgconfig(farstream-0.1)
+BuildRequires:  pkgconfig(farstream-0.2)
 BuildRequires:  pkgconfig(telepathy-glib) >= 0.17.5
 BuildRequires:  pkgconfig(telepathy-farstream) >= 0.4.0
-BuildRequires:  pkgconfig(gstreamer-0.10)
-BuildRequires:  pkgconfig(gstreamer-interfaces-0.10)
+BuildRequires:  pkgconfig(gstreamer-1.0)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  python
 BuildRequires:  dbus-python
@@ -149,8 +147,10 @@ export QT_SELECT=5
 # >> files devel
 %{_libdir}/libtelepathy-qt5.so
 %{_libdir}/pkgconfig/TelepathyQt5.pc
+%{_libdir}/pkgconfig/TelepathyQt5Service.pc
 %{_includedir}/telepathy-qt5/TelepathyQt/*
 %{_libdir}/cmake/TelepathyQt5/*.cmake
+%{_libdir}/cmake/TelepathyQt5Service/*.cmake
 # << files devel
 
 %files farstream

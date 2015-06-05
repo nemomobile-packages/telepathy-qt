@@ -850,12 +850,13 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/TelepathyQt${QT_VERSION_MAJOR}ConfigVe
 
 add_subdirectory(Farstream)
 
-if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
+if(ENABLE_SERVICE_SUPPORT)
     # lets build tp-qt service side support as a separate library until we can guarantee API/ABI
     # stability
     set(telepathy_qt_service_SRCS
         base-connection-manager.cpp
         base-connection.cpp
+        base-channel.cpp
         base-protocol.cpp
         dbus-error.cpp
         dbus-object.cpp
@@ -871,6 +872,8 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
         base-connection-manager.h
         BaseConnection
         base-connection.h
+        BaseChannel
+        base-channel.h
         BaseProtocol
         BaseProtocolAddressingInterface
         BaseProtocolAvatarsInterface
@@ -896,6 +899,8 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
         abstract-adaptor.h
         base-connection-manager.h
         base-connection-manager-internal.h
+        base-channel.h
+        base-channel-internal.h
         base-connection.h
         base-connection-internal.h
         base-protocol.h
@@ -954,7 +959,6 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
     target_link_libraries(telepathy-qt${QT_VERSION_MAJOR}-service
         ${QT_QTDBUS_LIBRARY}
         ${QT_QTCORE_LIBRARY}
-        telepathy-qt${QT_VERSION_MAJOR}
         ${TP_QT_LIBRARY_LINKER_FLAGS})
 
     # Set the correct version number
@@ -1006,4 +1010,4 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
             DESTINATION ${_TelepathyQtServiceConfig_INSTALL_DIR}
             COMPONENT headers)
 
-endif(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
+endif(ENABLE_SERVICE_SUPPORT)

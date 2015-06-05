@@ -33,23 +33,59 @@ namespace Tp
 {
 
 class AbstractProtocolInterface;
+class AbstractConnectionInterface;
+class AbstractChannelInterface;
 class BaseConnection;
+class BaseConnectionRequestsInterface;
+class BaseConnectionContactsInterface;
+class BaseConnectionSimplePresenceInterface;
+class BaseConnectionContactListInterface;
+class BaseConnectionContactInfoInterface;
+class BaseConnectionAddressingInterface;
+class BaseConnectionAliasingInterface;
 class BaseConnectionManager;
 class BaseProtocol;
 class BaseProtocolAddressingInterface;
 class BaseProtocolAvatarsInterface;
 class BaseProtocolPresenceInterface;
+class BaseChannel;
+class BaseChannelTextType;
+class BaseChannelMessagesInterface;
+class BaseChannelServerAuthenticationType;
+class BaseChannelSASLAuthenticationInterface;
+class BaseChannelCaptchaAuthenticationInterface;
+class BaseChannelSecurableInterface;
+class BaseChannelChatStateInterface;
+class BaseChannelGroupInterface;
 class DBusService;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 typedef SharedPtr<AbstractProtocolInterface> AbstractProtocolInterfacePtr;
+typedef SharedPtr<AbstractConnectionInterface> AbstractConnectionInterfacePtr;
+typedef SharedPtr<AbstractChannelInterface> AbstractChannelInterfacePtr;
 typedef SharedPtr<BaseConnection> BaseConnectionPtr;
+typedef SharedPtr<BaseConnectionRequestsInterface> BaseConnectionRequestsInterfacePtr;
+typedef SharedPtr<BaseConnectionContactsInterface> BaseConnectionContactsInterfacePtr;
+typedef SharedPtr<BaseConnectionSimplePresenceInterface> BaseConnectionSimplePresenceInterfacePtr;
+typedef SharedPtr<BaseConnectionContactListInterface> BaseConnectionContactListInterfacePtr;
+typedef SharedPtr<BaseConnectionContactInfoInterface> BaseConnectionContactInfoInterfacePtr;
+typedef SharedPtr<BaseConnectionAddressingInterface> BaseConnectionAddressingInterfacePtr;
+typedef SharedPtr<BaseConnectionAliasingInterface> BaseConnectionAliasingInterfacePtr;
 typedef SharedPtr<BaseConnectionManager> BaseConnectionManagerPtr;
 typedef SharedPtr<BaseProtocol> BaseProtocolPtr;
 typedef SharedPtr<BaseProtocolAddressingInterface> BaseProtocolAddressingInterfacePtr;
 typedef SharedPtr<BaseProtocolAvatarsInterface> BaseProtocolAvatarsInterfacePtr;
 typedef SharedPtr<BaseProtocolPresenceInterface> BaseProtocolPresenceInterfacePtr;
+typedef SharedPtr<BaseChannel> BaseChannelPtr;
+typedef SharedPtr<BaseChannelTextType> BaseChannelTextTypePtr;
+typedef SharedPtr<BaseChannelMessagesInterface> BaseChannelMessagesInterfacePtr;
+typedef SharedPtr<BaseChannelServerAuthenticationType> BaseChannelServerAuthenticationTypePtr;
+typedef SharedPtr<BaseChannelSASLAuthenticationInterface> BaseChannelSASLAuthenticationInterfacePtr;
+typedef SharedPtr<BaseChannelCaptchaAuthenticationInterface> BaseChannelCaptchaAuthenticationInterfacePtr;
+typedef SharedPtr<BaseChannelSecurableInterface> BaseChannelSecurableInterfacePtr;
+typedef SharedPtr<BaseChannelChatStateInterface> BaseChannelChatStateInterfacePtr;
+typedef SharedPtr<BaseChannelGroupInterface> BaseChannelGroupInterfacePtr;
 typedef SharedPtr<DBusService> DBusServicePtr;
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
