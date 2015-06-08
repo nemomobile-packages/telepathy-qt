@@ -40,8 +40,8 @@ endif(POLICY CMP0011)
 #   set nano_version to 1
 set(TP_QT_MAJOR_VERSION 0)
 set(TP_QT_MINOR_VERSION 9)
-set(TP_QT_MICRO_VERSION 4)
-set(TP_QT_NANO_VERSION  0)
+set(TP_QT_MICRO_VERSION 6)
+set(TP_QT_NANO_VERSION  1)
 
 set(PACKAGE_NAME telepathy-qt)
 
@@ -112,17 +112,13 @@ else (${TP_QT_NANO_VERSION} EQUAL 0)
 endif (${TP_QT_NANO_VERSION} EQUAL 0)
 
 # Add an option for compiling tp-qt-service
-option(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT "Enable compilation of experimental and unstable service side bindings for Telepathy-Qt" FALSE)
+option(ENABLE_SERVICE_SUPPORT "Enable compilation of service side bindings for Telepathy-Qt" TRUE)
 # Add an option for compiling examples
 option(ENABLE_EXAMPLES "Enable compilation of examples for Telepathy-Qt" TRUE)
 # Add an option for compiling Farstream
 option(ENABLE_FARSTREAM "Enable compilation of Farstream bindings" TRUE)
 # Add an option for building tests
 option(ENABLE_TESTS "Enable compilation of automated tests" TRUE)
-
-if (ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
-    message(STATUS "You have enabled experimental service support for Telepathy-Qt. Be aware there are no guarantees of API stability yet for service-side classes.")
-endif (ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
 
 # The doxygen macro requires Qt to have been looked up to enable crosslinking
 include(Doxygen)
@@ -210,7 +206,7 @@ endif()
 
 if(ENABLE_FARSTREAM)
     # Find tp-farstream
-    set(FARSTREAM_MIN_VERSION "0.1.0")
+    set(FARSTREAM_MIN_VERSION "0.2.0")
     find_package(Farstream)
     macro_log_feature(FARSTREAM_FOUND "Farstream"
                       "A Framework for dealing with audio/video conferencing protocols"
@@ -218,7 +214,7 @@ if(ENABLE_FARSTREAM)
                       "Needed, together with GStreamer and Telepathy-Farstream, to build telepathy-qt-farstream")
 
     # Find tp-farstream
-    set(TELEPATHY_FARSTREAM_MIN_VERSION "0.2.2")
+    set(TELEPATHY_FARSTREAM_MIN_VERSION "0.6.0")
     find_package(TelepathyFarstream)
     macro_log_feature(TELEPATHYFARSTREAM_FOUND "Telepathy-Farstream"
                       "A Framework for dealing with audio/video conferencing protocols"

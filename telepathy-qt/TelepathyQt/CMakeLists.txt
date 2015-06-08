@@ -7,6 +7,8 @@ set(LD_FLAGS "${LD_FLAGS} ${VISIBILITY_HIDDEN_FLAGS} ${COMPILER_COVERAGE_FLAGS} 
 # We are building Telepathy-Qt
 add_definitions(-DBUILDING_TP_QT)
 
+configure_file(global.h.in ${CMAKE_CURRENT_BINARY_DIR}/global.h)
+
 # Sources for Tp-Qt
 set(telepathy_qt_SRCS
     abstract-client.cpp
@@ -346,7 +348,7 @@ set(telepathy_qt_HEADERS
     GenericPropertyFilter
     generic-property-filter.h
     Global
-    global.h
+    ${CMAKE_CURRENT_BINARY_DIR}/global.h
     HandledChannelNotifier
     handled-channel-notifier.h
     IncomingDBusTubeChannel
@@ -850,12 +852,14 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/TelepathyQt${QT_VERSION_MAJOR}ConfigVe
 
 add_subdirectory(Farstream)
 
-if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
+if(ENABLE_SERVICE_SUPPORT)
     # lets build tp-qt service side support as a separate library until we can guarantee API/ABI
     # stability
     set(telepathy_qt_service_SRCS
+        base-call.cpp
         base-connection-manager.cpp
         base-connection.cpp
+        base-channel.cpp
         base-protocol.cpp
         dbus-error.cpp
         dbus-object.cpp
@@ -867,10 +871,14 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
         abstract-adaptor.h
         AbstractDBusServiceInterface
         AbstractProtocolInterface
+        BaseCall
+        base-call.h
         BaseConnectionManager
         base-connection-manager.h
         BaseConnection
         base-connection.h
+        BaseChannel
+        base-channel.h
         BaseProtocol
         BaseProtocolAddressingInterface
         BaseProtocolAvatarsInterface
@@ -888,14 +896,19 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
     # Generated headers which will be installed and exported
     set(telepathy_qt_service_gen_HEADERS
         ${CMAKE_CURRENT_BINARY_DIR}/_gen/svc-channel.h
+        ${CMAKE_CURRENT_BINARY_DIR}/_gen/svc-call.h
         ${CMAKE_CURRENT_BINARY_DIR}/_gen/svc-connection.h
         ${CMAKE_CURRENT_BINARY_DIR}/_gen/svc-connection-manager.h)
 
     # Headers file moc will be run on
     set(telepathy_qt_service_MOC_SRCS
         abstract-adaptor.h
+        base-call.h
+        base-call-internal.h
         base-connection-manager.h
         base-connection-manager-internal.h
+        base-channel.h
+        base-channel-internal.h
         base-connection.h
         base-connection-internal.h
         base-protocol.h
@@ -907,6 +920,7 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
 
     set(SPECS
         svc-channel
+        svc-call
         svc-connection
         svc-connection-manager)
     foreach(spec ${SPECS})
@@ -922,6 +936,7 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
     endforeach(spec ${SPECS})
 
     tpqt_service_generator(svc-channel servicechannel Channel Tp::Service DEPENDS svc-channel-spec-xincludator)
+    tpqt_service_generator(svc-call servicecall Channel Tp::Service DEPENDS svc-call-spec-xincludator)
     tpqt_service_generator(svc-connection serviceconn Connection Tp::Service DEPENDS svc-connection-spec-xincludator)
     tpqt_service_generator(svc-connection-manager servicecm ConnectionManager Tp::Service DEPENDS svc-connection-manager-spec-xincludator)
 
@@ -954,7 +969,6 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
     target_link_libraries(telepathy-qt${QT_VERSION_MAJOR}-service
         ${QT_QTDBUS_LIBRARY}
         ${QT_QTCORE_LIBRARY}
-        telepathy-qt${QT_VERSION_MAJOR}
         ${TP_QT_LIBRARY_LINKER_FLAGS})
 
     # Set the correct version number
@@ -1006,4 +1020,4 @@ if(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
             DESTINATION ${_TelepathyQtServiceConfig_INSTALL_DIR}
             COMPONENT headers)
 
-endif(ENABLE_EXPERIMENTAL_SERVICE_SUPPORT)
+endif(ENABLE_SERVICE_SUPPORT)

@@ -46,7 +46,6 @@ struct TP_QT_NO_EXPORT DBusService::Private
 
     DBusService *parent;
     QString busName;
-    QString objectPath;
     DBusObject *dbusObject;
     bool registered;
 };
@@ -113,7 +112,7 @@ QString DBusService::busName() const
  */
 QString DBusService::objectPath() const
 {
-    return mPriv->objectPath;
+    return mPriv->dbusObject->objectPath();
 }
 
 /**
@@ -186,7 +185,7 @@ bool DBusService::registerObject(const QString &busName, const QString &objectPa
     debug() << "Registered object" << objectPath << "at bus name" << busName;
 
     mPriv->busName = busName;
-    mPriv->objectPath = objectPath;
+    mPriv->dbusObject->setObjectPath(objectPath);
     mPriv->registered = true;
     return true;
 }
@@ -281,6 +280,33 @@ DBusObject *AbstractDBusServiceInterface::dbusObject() const
 bool AbstractDBusServiceInterface::isRegistered() const
 {
     return mPriv->registered;
+}
+
+/**
+ * Emit PropertiesChanged signal on object org.freedesktop.DBus.Properties interface
+ * with the property \a propertyName.
+ *
+ * \param propertyName The name of the changed property.
+ * \param propertyValue The actual value of the changed property.
+ * \return \c false if the signal can not be emmited or \a true otherwise.
+ */
+bool AbstractDBusServiceInterface::notifyPropertyChanged(const QString &propertyName, const QVariant &propertyValue)
+{
+    if (!isRegistered()) {
+        return false;
+    }
+
+    QDBusMessage signal = QDBusMessage::createSignal(dbusObject()->objectPath(),
+                                                     TP_QT_IFACE_PROPERTIES,
+                                                     QLatin1String("PropertiesChanged"));
+    QVariantMap changedProperties;
+    changedProperties.insert(propertyName, propertyValue);
+
+    signal << interfaceName();
+    signal << changedProperties;
+    signal << QStringList();
+
+    return dbusObject()->dbusConnection().send(signal);
 }
 
 /**
