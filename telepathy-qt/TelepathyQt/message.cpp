@@ -335,6 +335,17 @@ QString Message::messageToken() const
 }
 
 /**
+ * Return the subscriber identity of the cellular network associated with
+ * this message, or an empty string if there is no identity.
+ *
+ * \return The non-empty subscriber identity, or an empty string if none.
+ */
+QString Message::subscriberIdentity() const
+{
+    return stringOrEmptyFromPart(mPriv->parts, 0, "subscriber-identity");
+}
+
+/**
  * Return whether this message is specific to a D-Bus interface. This is
  * \c false in almost all cases.
  *

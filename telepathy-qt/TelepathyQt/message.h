@@ -67,6 +67,8 @@ public:
 
     QString messageToken() const;
 
+    QString subscriberIdentity() const;
+
     bool isSpecificToDBusInterface() const;
     QString dbusInterface() const;
 
