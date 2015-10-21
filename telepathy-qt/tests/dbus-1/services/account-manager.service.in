@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.freedesktop.Telepathy.AccountManager
-Exec=@TEST_PYTHON@ @NEMO_TESTS_DIR_BIN@/account-manager.py

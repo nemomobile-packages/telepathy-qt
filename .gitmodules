@@ -1,3 +1,0 @@
-[submodule "upstream"]
-	path = upstream
-	url = http://anongit.freedesktop.org/git/telepathy/telepathy-qt.git
